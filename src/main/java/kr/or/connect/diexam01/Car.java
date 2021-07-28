@@ -1,14 +1,15 @@
 package kr.or.connect.diexam01;
 
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Component
 public class Car {
-	Engine v8;
+	@Autowired
+	private Engine v8;
 	
 	public Car() {
 		System.out.println("Car 생성자");
-	}
-	
-	public void setEngine(Engine e) {
-		this.v8 = e;
 	}
 	
 	public void run() {
