@@ -14,8 +14,16 @@ import java.io.PrintWriter;
 @WebServlet("/guestbooks/write")
 public class GuestbookWriteServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 코드를 작성하세요.
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	response.setContentType("text/html;charset=UTF-8");
+    	String name=request.getParameter("name");
+    	String content=request.getParameter("content");
+    	Guestbook guestbook=new Guestbook(name,content);
+    	GuestbookDao guestbookdao=new GuestbookDao();
+    	guestbookdao.addGuestbook(guestbook);
+    	/* 구글링으로 추가해준 코드 */
+    	response.sendRedirect("http://localhost:8080/guestbook/guestbooks");
+    	
     }
 
 }

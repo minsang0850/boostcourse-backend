@@ -38,7 +38,7 @@ public class GuestbookDao {
     }
 
     public void addGuestbook(Guestbook guestbook){
-    	String sql="INSERT INTO guestbook(id, name, content, regdate) VALUES (?, ?, ?, ?)";
+    	String sql="INSERT INTO guestbook(id, name, content, regdate) VALUES (id, ?, ?, ?)";
     	String sql2="SELECT COUNT(*) FROM guestbook";
     	DBUtil dbutil=new DBUtil();
     	Long count=0L;
@@ -51,17 +51,16 @@ public class GuestbookDao {
 			ex.printStackTrace();
 		}
 		try(Connection conn = dbutil.getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql)){
-			java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
-			//guestbook.setRegdate(sqlDate);
+				PreparedStatement ps = conn.prepareStatement(sql)){
+			java.util.Date date=new java.util.Date();
+			java.sql.Date sqlDate=new java.sql.Date(date.getTime());
 			guestbook.setId(count+1);
-			ps.setLong(1, guestbook.getId());
-			ps.setString(2, guestbook.getName());
-			ps.setString(3, guestbook.getContent());
-			ps.setDate(4,sqlDate);
-			//ps.setDate(4, guestbook.getRegdate());
-			//ps.setDate(4, (Date) guestbook.getRegDate());
+			//ps.setLong(1, guestbook.getId());
+			ps.setString(1, guestbook.getName());
+			ps.setString(2, guestbook.getContent());
+			ps.setDate(3,sqlDate);
 			ps.executeUpdate();
+			ps.close();
 		}catch(Exception ex) {
 			ex.printStackTrace();
 		}
