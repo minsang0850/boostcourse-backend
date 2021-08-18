@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import org.edwith.webbe.guestbook.dto.Guestbook;
 import org.edwith.webbe.guestbook.service.GuestbookService;
@@ -26,37 +27,23 @@ public class GuestbookController {
 	@GetMapping(path="/list")
 	public String list(@RequestParam(name="start", required=false, defaultValue="0") int start,
 					   ModelMap model,
-					   HttpServletRequest request,
+					   @CookieValue(value="count", defaultValue="1", required=true) String value,
 					   HttpServletResponse response) {
-		String value = null;
-		boolean find = false;
-		Cookie[] cookies = request.getCookies();
-		if(cookies != null) {
-			for(Cookie cookie : cookies) {
-				if("count".equals(cookie.getName())) {
-					find = true;
-					value = cookie.getValue();
-				}
-			}
-		}
-		
-      
-		if(!find) {
-			value = "1";
-		}else { // 쿠키를 찾았다면.
+		 
 			try {
 				int i = Integer.parseInt(value);
 				value = Integer.toString(++i);
 			}catch(Exception ex) {
 				value = "1";
 			}
-		}
+		
 		
    
 		Cookie cookie = new Cookie("count", value);
 		cookie.setMaxAge(60 * 60 * 24 * 365); // 1년 동안 유지.
 		cookie.setPath("/"); // / 경로 이하에 모두 쿠키 적용. 
 		response.addCookie(cookie);
+		
 		// start로 시작하는 방명록 목록 구하기
 		List<Guestbook> list = guestbookService.getGuestbooks(start);
 		
