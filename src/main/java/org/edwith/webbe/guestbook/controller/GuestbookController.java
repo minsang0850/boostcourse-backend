@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.edwith.webbe.guestbook.dto.Guestbook;
 import org.edwith.webbe.guestbook.service.GuestbookService;
@@ -77,5 +79,19 @@ public class GuestbookController {
 		System.out.println("clientIp : " + clientIp);
 		guestbookService.addGuestbook(guestbook, clientIp);
 		return "redirect:list";
+	}
+	
+	@GetMapping(path="/delete")
+	public String delete(@RequestParam(name="id", required=true)Long id, 
+            @SessionAttribute("isAdmin") String isAdmin,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttr){
+		if(isAdmin == null || !"true".equals(isAdmin)) { // 세션값이 true가 아닐 경우
+			redirectAttr.addFlashAttribute("errorMessage", "로그인을 하지 않았습니다.");
+			return "redirect:loginform";
+		}
+		String clientIp = request.getRemoteAddr();
+		guestbookService.deleteGuestbook(id, clientIp);
+		return "redirect:list";		
 	}
 }
