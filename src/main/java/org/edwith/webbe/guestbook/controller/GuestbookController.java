@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.edwith.webbe.guestbook.argumentresolver.HeaderInfo;
 import org.edwith.webbe.guestbook.dto.Guestbook;
 import org.edwith.webbe.guestbook.service.GuestbookService;
 
@@ -30,8 +30,11 @@ public class GuestbookController {
 	public String list(@RequestParam(name="start", required=false, defaultValue="0") int start,
 					   ModelMap model,
 					   @CookieValue(value="count", defaultValue="1", required=true) String value,
-					   HttpServletResponse response) {
+					   HttpServletResponse response, HeaderInfo headerInfo) {
 		 
+		System.out.println("-----------------------------------------------------");
+		System.out.println(headerInfo.get("user-agent"));
+		System.out.println("-----------------------------------------------------");
 			try {
 				int i = Integer.parseInt(value);
 				value = Integer.toString(++i);
